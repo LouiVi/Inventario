@@ -31,8 +31,9 @@ function OnStart()
 	btnsearch.SetOnTouch(  SearchProduct );
 	lay3 = app.CreateLayout( "Linear", "Horizontal, FillX" );
 	lay.AddChild( lay3 );
-	numprod2 = app.CreateTextEdit( "", 1, -1 );
-	numprod2.SetEnabled( false );
+	numprod2 = app.CreateSpinner( "", 1, -1 );
+	numprod2.SetOnChange( SearchProduct2 )
+	//numprod2.SetEnabled( false );
   lay3.AddChild( numprod2 )
   lay4 = app.CreateLayout( "Linear", "Horizontal, FillX" );
 	lay.AddChild( lay4 );
@@ -138,6 +139,34 @@ function SearchProduct()
 	db.ExecuteSql("SELECT * FROM INVENTARIO WHERE Num_Producto = '" + numprod.GetText() + "'",[], OnResult);
 }
 
+function SearchProduct2()
+{
+
+	db = app.OpenDatabase( dbProd );
+	//app.ShowPopup( "Database is ready." );
+	db.ExecuteSql("SELECT * FROM INVENTARIO WHERE Num_Producto = '" + numprod2.GetText() + "'",[], OnResult);
+}
+
+//Callback to show query results in debug.  
+function OnResult2( results )   
+{  
+    var s = "";  
+    var len = results.rows.length;  
+    for(var i = 0; i < len; i++ )   
+    {  
+        var item = results.rows.item(i)  
+        s += "," + item.Num_Producto;   
+    }  
+    numprod2.SetList( numprod2.GetText()+s )
+}  
+
+//Callback to show errors.  
+function OnError( msg )   
+{  
+    app.Alert( "Error: " + msg )  
+    console.log( "Error: " + msg )  
+}
+
 function OnResult( results )   
 {  
     app.ShowProgress( "Searching ..." );
@@ -146,7 +175,8 @@ function OnResult( results )
     var item = results.rows.item(0);
     numprod.SetText( "" );
     
-    numprod2.SetText( item.Num_Producto );
+    numprod2.SetList( item.Num_Producto );
+    db.ExecuteSql("SELECT Num_Producto  FROM INVENTARIO ORDER BY Num_Producto ASC",[], OnResult2);
     descripcion.SetText( item.Descripcion );
     datCosto.SetText( item.Costo );
     datPrecio.SetText( item.Precio );
