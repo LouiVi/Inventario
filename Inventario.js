@@ -20,7 +20,7 @@ function OnStart()
 	lay.AddChild( txt )
 	lay2 = app.CreateLayout( "Linear", "Horizontal, FillX" );
 	lay.AddChild( lay2 );
-	numprod = app.CreateTextEdit( "009603122355", 0.62, -1 );
+	numprod = app.CreateTextEdit( "009603122355", 0.62, -1,"numbers");
 	numprod.SetHint( "Scan or write" ); 
 	numprod.SetOnEnter( SearchProduct );
 	//numprod.SetOnFocus( ClearLayout );
